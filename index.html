@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FINFIT | Student Finance Tracker</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f0f8f3;
+      color: #183c2e;
+    }
+
+    .layout {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    .sidebar {
+      width: 230px;
+      background: #123c2d;
+      color: white;
+      padding: 28px 18px;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 28px;
+      font-weight: bold;
+      margin-bottom: 8px;
+    }
+
+    .tagline {
+      color: #c0dfcf;
+      font-size: 12px;
+      margin-bottom: 35px;
+    }
+
+    .nav a {
+      display: block;
+      color: #e0f1e7;
+      text-decoration: none;
+      padding: 14px 12px;
+      margin-bottom: 8px;
+      border-radius: 9px;
+    }
+
+    .nav a:first-child,
+    .nav a:hover {
+      background: #28664b;
+    }
+
+    .main {
+      flex: 1;
+      min-width: 0;
+      padding: 30px;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      font-size: 28px;
+    }
+
+    .header p {
+      color: #648071;
+      margin-top: 7px;
+    }
+
+    .badge {
+      background: #d6f3df;
+      padding: 10px 14px;
+      border-radius: 20px;
+      font-size: 13px;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: white;
+      padding: 22px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px #183c2e0b;
+    }
+
+    .card p {
+      color: #6c8276;
+      font-size: 13px;
+      margin-bottom: 13px;
+    }
+
+    .card h2 {
+      font-size: 25px;
+      overflow-wrap: anywhere;
+    }
+
+    .positive {
+      color: #218451;
+    }
+
+    .section-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .panel {
+      background: white;
+      padding: 24px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .panel h3 {
+      margin-bottom: 20px;
+    }
+
+    .budget-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin: 20px 0 10px;
+      font-size: 14px;
+    }
+
+    .progress {
+      height: 10px;
+      background: #e4eee7;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .bar {
+      height: 100%;
+      width: 35%;
+      background: #37a66b;
+      border-radius: 10px;
+    }
+
+    .savings-bar {
+      width: 60%;
+      background: #e6b84a;
+    }
+
+    .chart {
+      height: 155px;
+      display: flex;
+      align-items: end;
+      justify-content: space-around;
+      gap: 12px;
+      padding-top: 15px;
+      border-bottom: 1px solid #e4eee7;
+    }
+
+    .chart-column {
+      width: 12%;
+      background: #45aa77;
+      border-radius: 7px 7px 0 0;
+    }
+
+    .chart-labels {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 10px;
+      color: #71877a;
+      font-size: 12px;
+    }
+
+    .transactions {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    .transactions th,
+    .transactions td {
+      padding: 13px 8px;
+      border-bottom: 1px solid #e9f0eb;
+      text-align: left;
+    }
+
+    .transactions th {
+      color: #71877a;
+      font-weight: normal;
+    }
+
+    .amount {
+      color: #d45b52;
+      font-weight: bold;
+    }
+
+    .form-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    input,
+    select,
+    button {
+      padding: 12px;
+      border: 1px solid #d5e4da;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+
+    input,
+    select {
+      flex: 1;
+      min-width: 120px;
+      background: white;
+    }
+
+    button {
+      background: #1c7048;
+      color: white;
+      border: none;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #145637;
+    }
+
+    @media (max-width: 950px) {
+      .cards {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .layout {
+        display: block;
+      }
+
+      .sidebar {
+        width: 100%;
+        padding: 18px;
+      }
+
+      .logo {
+        font-size: 24px;
+      }
+
+      .tagline {
+        margin-bottom: 15px;
+      }
+
+      .nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+
+      .nav a {
+        padding: 9px;
+        margin: 0;
+        font-size: 13px;
+      }
+
+      .main {
+        padding: 18px 12px;
+      }
+
+      .header h1 {
+        font-size: 23px;
+      }
+
+      .badge {
+        display: none;
+      }
+
+      .cards {
+        gap: 10px;
+      }
+
+      .card {
+        padding: 15px;
+      }
+
+      .card h2 {
+        font-size: 21px;
+      }
+
+      .panel {
+        padding: 16px 12px;
+      }
+
+      .transactions {
+        font-size: 12px;
+      }
+
+      .transactions th,
+      .transactions td {
+        padding: 10px 4px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="layout">
+
+    <aside class="sidebar">
+      <div class="logo">💚 FINFIT</div>
+      <div class="tagline">Smart money. Better future.</div>
+
+      <nav class="nav">
+        <a href="#dashboard">🏠 Dashboard</a>
+        <a href="#expenses">💳 Expenses</a>
+        <a href="#savings">🎯 Savings</a>
+        <a href="#analytics">📊 Analytics</a>
+        <a href="#profile">👤 Profile</a>
+      </nav>
+    </aside>
+
+    <main class="main" id="dashboard">
+      <header class="header">
+        <div>
+          <h1>Student Dashboard 👋</h1>
+          <p>Here's your financial overview.</p>
+        </div>
+        <div class="badge">🌱 Building healthy money habits</div>
+      </header>
+
+      <section class="cards">
+        <div class="card">
+          <p>Monthly Budget</p>
+          <h2>₹10,000</h2>
+        </div>
+
+        <div class="card">
+          <p>Total Spent</p>
+          <h2>₹3,500</h2>
+        </div>
+
+        <div class="card">
+          <p>Remaining Balance</p>
+          <h2 class="positive">₹6,500</h2>
+        </div>
+
+        <div class="card">
+          <p>Money Health Score</p>
+          <h2>85/100</h2>
+        </div>
+      </section>
+
+      <section class="section-grid" id="analytics">
+        <div class="panel">
+          <h3>📊 Weekly Spending</h3>
+
+          <div class="chart">
+            <div class="chart-column" style="height:35%"></div>
+            <div class="chart-column" style="height:60%"></div>
+            <div class="chart-column" style="height:45%"></div>
+            <div class="chart-column" style="height:85%"></div>
+            <div class="chart-column" style="height:50%"></div>
+            <div class="chart-column" style="height:70%"></div>
+            <div class="chart-column" style="height:30%"></div>
+          </div>
+
+          <div class="chart-labels">
+            <span>Mon</span><span>Tue</span><span>Wed</span>
+            <span>Thu</span><span>Fri</span><span>Sat</span>
+            <span>Sun</span>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h3>💰 Budget Usage</h3>
+
+          <div class="budget-row">
+            <span>Monthly spending</span>
+            <strong>35%</strong>
+          </div>
+
+          <div class="progress">
+            <div class="bar"></div>
+          </div>
+
+          <div class="budget-row">
+            <span>Money remaining</span>
+            <strong>65%</strong>
+          </div>
+
+          <p style="color:#648071;font-size:13px;margin-top:20px">
+            Great start! Keep tracking your expenses.
+          </p>
+        </div>
+      </section>
+
+      <section class="section-grid">
+        <div class="panel" id="savings">
+          <h3>🎯 Savings Goal</h3>
+          <p>New Laptop</p>
+
+          <div class="budget-row">
+            <span>₹6,000 saved</span>
+            <strong>60% of ₹10,000</strong>
+          </div>
+
+          <div class="progress">
+            <div class="bar savings-bar"></div>
+          </div>
+        </div>
+
+        <div class="panel" id="profile">
+          <h3>🏆 Your Progress</h3>
+          <p>⭐ Money Health Score: 85/100</p>
+          <p style="margin-top:15px">🔥 Savings streak: 5 days</p>
+          <p style="margin-top:15px">🎖️ Points earned: 250</p>
+        </div>
+      </section>
+
+      <section class="panel" id="expenses">
+        <h3>➕ Add Expense</h3>
+
+        <form id="expenseForm">
+          <div class="form-row">
+            <input id="expenseName" type="text"
+              placeholder="Expense name" required>
+
+            <input id="expenseAmount" type="number"
+              placeholder="Amount (₹)" min="1" step="0.01" required>
+
+            <select id="expenseCategory" required>
+              <option value="Food">Food</option>
+              <option value="Travel">Travel</option>
+              <option value="Education">Education</option>
+              <option value="Shopping">Shopping</option>
+              <option value="Other">Other</option>
+            </select>
+
+            <button type="submit">Add Expense</button>
+          </div>
+        </form>
+      </section>
+
+      <section class="panel">
+        <h3>🧾 Recent Transactions</h3>
+
+        <div style="overflow-x:auto">
+          <table class="transactions">
+            <thead>
+              <tr>
+                <th>Expense</th>
+                <th>Category</th>
+                <th>Date</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+
+            <tbody id="transactionList">
+              <tr>
+                <td>Lunch</td>
+                <td>Food</td>
+                <td>Today</td>
+                <td class="amount">−₹150</td>
+              </tr>
+
+              <tr>
+                <td>Bus pass</td>
+                <td>Travel</td>
+                <td>Yesterday</td>
+                <td class="amount">−₹500</td>
+              </tr>
+
+              <tr>
+                <td>Notebook</td>
+                <td>Education</td>
+                <td>Yesterday</td>
+                <td class="amount">−₹100</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <footer style="text-align:center;padding:20px;color:#71877a;font-size:12px">
+        FINFIT © 2026 | Smart money. Better future.
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    const expenseForm = document.getElementById("expenseForm");
+    const transactionList = document.getElementById("transactionList");
+
+    expenseForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("expenseName").value.trim();
+      const amount = Number(document.getElementById("expenseAmount").value);
+      const category = document.getElementById("expenseCategory").value;
+
+      if (!name || !Number.isFinite(amount) || amount <= 0) {
+        alert("Please enter a valid expense and amount.");
+        return;
+      }
+
+      const row = document.createElement("tr");
+      const values = [
+        name,
+        category,
+        new Date().toLocaleDateString(),
+        "−₹" + amount.toLocaleString("en-IN", {
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2
+        })
+      ];
+
+      values.forEach(function(value, index) {
+        const cell = document.createElement("td");
+        cell.textContent = value;
+
+        if (index === 3) {
+          cell.className = "amount";
+        }
+
+        row.appendChild(cell);
+      });
+
+      transactionList.prepend(row);
+      expenseForm.reset();
+    });
+  </script>
+</body>
+  </html>
